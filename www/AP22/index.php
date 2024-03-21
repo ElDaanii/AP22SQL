@@ -1,13 +1,13 @@
 <?php
-require_once("autoloader.php");
+require_once("class/modelo.php");
 ?>
 
 <html>
     </body>
         <div>
             <?php
-                $conn = new Connection;
-                $dataBase = $conn->getConn();
+                $mod = new Modelo;
+                $dataBase = $mod->showAllTasks();
             ?>
         </div>
     </body>
