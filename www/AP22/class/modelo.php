@@ -60,9 +60,9 @@ class Modelo extends Connection {
 
         $html = '<table border="1">';
         $html .= '<tr>';
-        $html .= '<tr><td colspan="5" align="center"><h1>REGISTROS</h1></td></tr>';
+        $html .= '<tr><td colspan="6" align="center"><h1>REGISTROS</h1></td></tr>';
         $html .= '<tr>';
-        $html .= '<tr><th>Id</th><th>Titulo</th><th>Descripcion</th><th>Fecha_creacion</th><th>Fecha_vencimiento</th></tr>';
+        $html .= '<tr><th>Id</th><th>Titulo</th><th>Descripcion</th><th>Fecha_creacion</th><th>Fecha_vencimiento</th><th>Modificar</th></tr>';
 
         foreach ($datos as $data) {
             $html .= '<tr>';
@@ -71,6 +71,7 @@ class Modelo extends Connection {
             $html .= '<td>' . $data['descripcion'] . '</td>';
             $html .= '<td>' . $data['fecha_creacion'] . '</td>';
             $html .= '<td>' . $data['fecha_vencimiento'] . '</td>';
+            $html .= '<td style="text-align: center;">' . '<a href="modifica.php?id=' . $data['id'] . '"><img src="form/editar.png" style="width: 30px; height: 30px;"></a>' . '</td>';
             $html .= '</tr>';
         }
     
