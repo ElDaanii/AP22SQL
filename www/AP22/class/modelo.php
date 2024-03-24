@@ -41,7 +41,12 @@ class Modelo extends Connection {
         $conn = new Connection;
         $dataBase = $conn->getConn();
 
-        $registros = "SELECT * FROM tareas";
+        $resultados_por_pagina = 10;
+
+        $pagina_actual = (isset($_GET['page']) && ($_GET['page'])) ? $_GET['page'] : 1;
+        $inicio = ($pagina_actual - 1) * $resultados_por_pagina;
+
+        $registros = "SELECT * FROM tareas LIMIT $inicio, $resultados_por_pagina";
         $resultado = mysqli_query($dataBase, $registros); 
 
 
@@ -57,26 +62,92 @@ class Modelo extends Connection {
 
     public function showAllTasks(){
         $datos = $this->getAllTasks();
-
         $html = '<table border="1">';
         $html .= '<tr>';
-        $html .= '<tr><td colspan="6" align="center"><h1>REGISTROS</h1></td></tr>';
+        $html .= '<tr><td colspan="7" align="center"><h1>REGISTROS</h1></td></tr>';
         $html .= '<tr>';
-        $html .= '<tr><th>Id</th><th>Titulo</th><th>Descripcion</th><th>Fecha_creacion</th><th>Fecha_vencimiento</th><th>Modificar</th></tr>';
+        $html .= '<tr><th>Id</th><th>Titulo</th><th>Descripcion</th><th>Fecha_creacion</th><th>Fecha_vencimiento</th><th>Modificar</th><th>Eliminar</th></tr>';
 
-        foreach ($datos as $data) {
-            $html .= '<tr>';
-            $html .= '<td>' . $data['id'] . '</td>';
-            $html .= '<td><a href="list.php?id=' . $data['id'] . '">' . $data['titulo'] . '</a></td>';
-            $html .= '<td>' . $data['descripcion'] . '</td>';
-            $html .= '<td>' . $data['fecha_creacion'] . '</td>';
-            $html .= '<td>' . $data['fecha_vencimiento'] . '</td>';
-            $html .= '<td style="text-align: center;">' . '<a href="modifica.php?id=' . $data['id'] . '"><img src="form/editar.png" style="width: 30px; height: 30px;"></a>' . '</td>';
-            $html .= '</tr>';
-        }
+        $cont=0;
+        foreach ($datos as $datos) {
+                $html .= '<tr>';
+                $html .= '<td>' . $datos['id'] . '</td>';
+                $html .= '<td><a href="list.php?id=' . $datos['id'] . '">' . $datos['titulo'] . '</a></td>';
+                $html .= '<td>' . $datos['descripcion'] . '</td>';
+                $html .= '<td>' . $datos['fecha_creacion'] . '</td>';
+                $html .= '<td>' . $datos['fecha_vencimiento'] . '</td>';
+                $html .= '<td style="text-align: center;">' . '<a href="modifica.php?id=' . $datos['id'] . '"><img src="form/editar.png" style="width: 30px; height: 30px;"></a>' . '</td>';
+                $html .= '<td style="text-align: center;">' . '<a href="borrar.php?id=' . $datos['id'] . '"><img src="form/papelera.png" style="width: 30px; height: 30px;"></a>' . '</td>';
+                $html .= '</tr>';
+                $cont ++;   
+            }
+
+        $html .= '<footer>';
+            $html .= '<tr><td colspan="7" align="center"><a href = "nueva.php">Añadir nuevo registro</td></tr>';
+        $html .= '</footer>';
+
     
         $html .= '</table>';
         echo $html;
+    }
+
+    public function showNavigation(){
+        $conn = new Connection;
+        $dataBase = $conn->getConn();
+
+        $pagina_actual = (isset($_GET['page']) && ($_GET['page'])) ? $_GET['page'] : 1;
+
+        $resultados_por_pagina = 10;
+
+        $total_registros_query = "SELECT COUNT(*) AS total FROM tareas";
+        $total_registros_resultado = mysqli_query($dataBase, $total_registros_query);
+        $total_registros_fila = mysqli_fetch_assoc($total_registros_resultado);
+        $total_registros = $total_registros_fila['total'];
+        $total_paginas = ceil($total_registros / $resultados_por_pagina);
+
+        echo '<div class="pagination">';
+
+        $pagina_anterior = $pagina_actual - 1;
+        $pagina_siguiente = $pagina_actual + 1;
+
+        if ($pagina_actual == 0) {
+            echo '<-'; 
+        } else {
+            echo '<a href="?page=' . $pagina_anterior . '"> <- </a> '; 
+        }
+
+        if ($pagina_actual == 1) {
+            echo '<strong> Inicio </strong> '; 
+        } else {
+            echo '<a href="?page=1"> Inicio </a> ';
+        }
+        
+        for ($pagina = 2; $pagina <= $total_paginas; $pagina++) {
+            if ($pagina == $pagina_actual) { // Si la página actual coincide con la página actual del bucle
+                echo '<strong><a href="?page=' . $pagina . '">' . $pagina . '</a></strong> '; // Resaltar en negrita
+            } else {
+                echo '<a href="?page=' . $pagina . '">' . $pagina . '</a> '; // Dejar como está
+            }
+        }  
+
+        if ($pagina_actual == $total_paginas) {
+            echo '<strong> Fin </strong> '; 
+        } else {
+            echo '<a href="?page=' . $total_paginas . '"> Fin </a> ';
+        }
+        
+        if ($pagina_actual == 0) {
+            echo '->'; 
+        } else {
+            echo '<a href="?page=' . $pagina_siguiente . '"> -> </a> '; 
+        }
+        
+        
+        echo '</div>';
+    }
+
+    public function showOrderAction(){
+        
     }
 
 }

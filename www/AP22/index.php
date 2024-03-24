@@ -8,6 +8,7 @@ require_once("class/modelo.php");
             <?php
                 $mod = new Modelo;
                 $dataBase = $mod->showAllTasks();
+                $dataBase = $mod->showNavigation();
             ?>
         </div>
     </body>
