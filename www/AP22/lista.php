@@ -1,3 +1,6 @@
+<?php
+require_once("class/modelo.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,9 +26,9 @@
         </tr>
     </tfoot>
     <tbody>
-        <tr>
-            <td>cell1_1</td>
-            <td>cell2_1</td>
+        <tr> <?php $mod = new Modelo; ?>
+            <td><?php $dataBase = $mod->showAllTasks(); ?></td>
+            <td><?php $dataBase = $mod->showNavigation(); ?></td>
             <td>cell3_1</td>
         </tr>
     </tbody>

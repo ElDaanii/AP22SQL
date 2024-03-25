@@ -1,14 +1,18 @@
 <?php
 require_once("class/modelo.php");
-?>
+session_start(); 
 
+$mod = new Modelo;
+
+?>
 <html>
-    </body>
+    <body>
         <div>
             <?php
-                $mod = new Modelo;
-                $dataBase = $mod->showAllTasks();
-                $dataBase = $mod->showNavigation();
+                $mod->showAllTasks();
+                $mod->showNavigation();
+                //$mod->showOrderAction('titulo');
+                echo $mod->getCurrentPage(); 
             ?>
         </div>
     </body>

@@ -13,7 +13,7 @@ class Modelo extends Connection {
             while (($data = fgetcsv($file, 1000, ",")) !== FALSE) {
                 $fecha_creacion = date("Y-m-d", strtotime($data[2]));
                 $fecha_vencimiento = date("Y-m-d", strtotime($data[3]));
-                $stmt->bind_param("ssss", $data[0], $data[1], $fecha_creacion, $fecha_vencimiento);
+                $stmt->bind_param("ssss", $data[0], $data[1], $fecha_vencimiento, $fecha_creacion);
                 $stmt->execute();
             }
             fclose($file);
@@ -61,18 +61,27 @@ class Modelo extends Connection {
     }
 
     public function showAllTasks(){
-        $datos = $this->getAllTasks();
+        /*---------------Cambiado-----------*/$datos = $this->showOrderAction('titulo');
         $html = '<table border="1">';
         $html .= '<tr>';
         $html .= '<tr><td colspan="7" align="center"><h1>REGISTROS</h1></td></tr>';
         $html .= '<tr>';
-        $html .= '<tr><th>Id</th><th>Titulo</th><th>Fecha_creacion</th><th>Fecha_vencimiento</th><th>Modificar</th><th>Eliminar</th></tr>';
+        $html .= '<form action="pagina_destino.php" method="post">';
+        $html .= '<td colspan="7">';
+        $html .= '<button type="submit" name="opcion" value="opcion1">Opción 1</button>';
+        $html .= '<button type="submit" name="opcion" value="opcion2">Opción 2</button>';
+        $html .= '<button type="submit" name="opcion" value="opcion3">Opción 3</button>';
+        $html .= '</td>';
+        $html .= '</form>';
+        $html .= '</tr>';
+        $html .= '<tr><th>Id</th><th>Titulo</th><th>Descripcion</th><th>Fecha_creacion</th><th>Fecha_vencimiento</th><th>Modificar</th><th>Eliminar</th></tr>';
 
         $cont=0;
         foreach ($datos as $datos) {
                 $html .= '<tr>';
                 $html .= '<td>' . $datos['id'] . '</td>';
                 $html .= '<td><a href="detalle.php?id=' . $datos['id'] . '">' . $datos['titulo'] . '</a></td>';
+                $html .= '<td>' . $datos['descripcion'] . '</td>';
                 $html .= '<td>' . $datos['fecha_creacion'] . '</td>';
                 $html .= '<td>' . $datos['fecha_vencimiento'] . '</td>';
                 $html .= '<td style="text-align: center;">' . '<a href="modifica.php?id=' . $datos['id'] . '"><img src="form/editar.png" style="width: 30px; height: 30px;"></a>' . '</td>';
@@ -142,13 +151,12 @@ class Modelo extends Connection {
         } else {
             echo '<a href="?page=' . $pagina_siguiente . '"> -> </a> '; 
         }
-
-        $_SESSION['currentPage'] = $this->getCurrentPage();
+        
         
         echo '</div>';
     }
 
-    /*public function showOrderAction($order_by){
+    public function showOrderAction($order_by){
         $conn = new Connection;
         $dataBase = $conn->getConn();
     
@@ -169,24 +177,9 @@ class Modelo extends Connection {
             echo "Error: " . mysqli_error($dataBase);
             return;
         }
-    
-        $datos = $this->showAllTasks($order_by);
-    }*/
-
-    public function getCurrentPage() {
-        if(isset($_GET['page'])) {
-            return $_GET['page'];
-        } elseif(isset($_SESSION['currentPage'])) {
-            return $_SESSION['currentPage'];
-        } else {
-            return 1;
-        }
-    }
-    
-
-    public function getCurrentOrder(){
-
+        return $resultado;
     }
     
     
+
 }
